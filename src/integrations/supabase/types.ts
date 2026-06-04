@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bill_items: {
+        Row: {
+          bill_id: string
+          created_at: string
+          id: string
+          item_id: string | null
+          item_name: string
+          price: number
+          quantity: number
+          subtotal: number
+        }
+        Insert: {
+          bill_id: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_name: string
+          price?: number
+          quantity?: number
+          subtotal?: number
+        }
+        Update: {
+          bill_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          price?: number
+          quantity?: number
+          subtotal?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bill_items_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bills: {
+        Row: {
+          bill_number: string
+          created_at: string
+          id: string
+          total_amount: number
+        }
+        Insert: {
+          bill_number?: string
+          created_at?: string
+          id?: string
+          total_amount?: number
+        }
+        Update: {
+          bill_number?: string
+          created_at?: string
+          id?: string
+          total_amount?: number
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          status: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price?: number
+          status?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
