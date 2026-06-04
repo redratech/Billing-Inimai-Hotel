@@ -79,16 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Hotel Inimai Billing System" },
+      { title: "Smart Hotel Billing System" },
       { name: "description", content: "Modern POS and billing for small hotels and restaurants." },
-      { property: "og:title", content: "Hotel Inimai Billing System" },
+      { property: "og:title", content: "Smart Hotel Billing System" },
       { property: "og:description", content: "Modern POS and billing for small hotels and restaurants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Hotel Inimai Billing System" },
-      { name: "twitter:description", content: "Modern POS and billing for small hotels and restaurants." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7372779-f250-4a90-8b92-54cbb54a4b0d/id-preview-a4a58942--03e11853-d60f-4dbd-b0da-49d4551cb641.lovable.app-1780553081076.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7372779-f250-4a90-8b92-54cbb54a4b0d/id-preview-a4a58942--03e11853-d60f-4dbd-b0da-49d4551cb641.lovable.app-1780553081076.png" },
     ],
     links: [
       {

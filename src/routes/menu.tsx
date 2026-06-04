@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, DEFAULT_FOOD_IMAGE, fetchItems, formatINR, type MenuItem } from "@/lib/db";
 
 export const Route = createFileRoute("/menu")({
-  head: () => ({ meta: [{ title: "Menu — Hotel Inimai" }] }),
+  head: () => ({ meta: [{ title: "Menu — Smart Hotel" }] }),
   component: MenuPage,
 });
 

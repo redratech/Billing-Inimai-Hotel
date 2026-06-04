@@ -22,7 +22,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <button onClick={() => setOpen(true)} aria-label="Open menu" className="p-2 -ml-2">
           <MenuIcon className="h-6 w-6" />
         </button>
-        <div className="font-bold tracking-tight">Hotel Inimai</div>
+        <div className="font-bold tracking-tight">Smart Hotel</div>
         <div className="w-8" />
       </header>
 
@@ -37,10 +37,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <div className="h-16 flex items-center justify-between px-5 border-b border-sidebar-border">
           <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
             <div className="h-9 w-9 rounded-xl flex items-center justify-center text-lg font-bold" style={{ background: "var(--gradient-warm)", color: "oklch(0.2 0.05 35)" }}>
-              HI
+              SH
             </div>
             <div className="leading-tight">
-              <div className="font-bold">Hotel Inimai</div>
+              <div className="font-bold">Smart Hotel</div>
               <div className="text-xs opacity-70">Billing System</div>
             </div>
           </Link>
@@ -71,7 +71,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="absolute bottom-0 inset-x-0 p-4 text-xs text-sidebar-foreground/60 border-t border-sidebar-border">
-          v1.0 · Powered by Redra Tech
+          v1.0 · Single Admin Mode
         </div>
       </aside>
 

@@ -18,15 +18,9 @@ import {
   type MenuItem,
 } from "@/lib/db";
 import { PrintBill, printBill } from "@/components/PrintBill";
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerClose,
-} from "@/components/ui/drawer";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "POS — Hotel Inimai Billing" }] }),
+  head: () => ({ meta: [{ title: "POS — Smart Hotel Billing" }] }),
   component: POSPage,
 });
 
@@ -37,7 +31,6 @@ function POSPage() {
   const [category, setCategory] = useState<string>("All");
   const [cart, setCart] = useState<CartLine[]>([]);
   const [lastBill, setLastBill] = useState<{ bill_number: string; created_at: string; lines: CartLine[]; total: number } | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return items
@@ -66,41 +59,26 @@ function POSPage() {
     setCart((c) => c.filter((l) => l.item_id !== id));
   }
 
-  function updateQty(id: string, qty: number) {
-    setCart((c) =>
-      c.map((l) => (l.item_id === id ? { ...l, quantity: qty } : l))
-    );
-  }
-
-  function cleanupCart() {
-    setCart((c) => c.filter((l) => l.quantity > 0));
-  }
-
   const saveMut = useMutation({
-    mutationFn: (lines?: CartLine[]) => createBill(lines || cart),
-    onSuccess: (b, variables) => {
+    mutationFn: () => createBill(cart),
+    onSuccess: (b) => {
       toast.success(`Bill ${b.bill_number} saved`);
-      const savedLines = variables || cart;
-      const savedTotal = savedLines.reduce((s, l) => s + l.price * l.quantity, 0);
-      setLastBill({ bill_number: b.bill_number, created_at: b.created_at, lines: savedLines, total: savedTotal });
+      setLastBill({ bill_number: b.bill_number, created_at: b.created_at, lines: cart, total });
       setCart([]);
-      setDrawerOpen(false);
       qc.invalidateQueries({ queryKey: ["bills"] });
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to save bill"),
   });
 
   async function handleSave() {
-    const activeCart = cart.filter((l) => l.quantity > 0);
-    if (!activeCart.length) return toast.error("Cart is empty");
-    await saveMut.mutateAsync(activeCart);
+    if (!cart.length) return toast.error("Cart is empty");
+    await saveMut.mutateAsync();
   }
 
   async function handlePrint() {
-    const activeCart = cart.filter((l) => l.quantity > 0);
-    if (!activeCart.length && !lastBill) return toast.error("Nothing to print");
-    if (activeCart.length) {
-      const b = await saveMut.mutateAsync(activeCart);
+    if (!cart.length && !lastBill) return toast.error("Nothing to print");
+    if (cart.length) {
+      const b = await saveMut.mutateAsync();
       setTimeout(() => printBill(), 200);
       void b;
     } else {
@@ -108,93 +86,8 @@ function POSPage() {
     }
   }
 
-  const renderCartContent = (isDrawer = false) => (
-    <div className="flex flex-col h-full overflow-hidden bg-card">
-      <div className="px-5 py-4 border-b flex items-center gap-2">
-        <ShoppingCart className="h-5 w-5 text-primary" />
-        <div className="font-bold text-lg">Current Bill</div>
-        <Badge variant="secondary" className="ml-auto">{cart.length} items</Badge>
-        {isDrawer && (
-          <DrawerClose asChild>
-            <Button variant="ghost" size="sm" className="ml-auto">
-              Close
-            </Button>
-          </DrawerClose>
-        )}
-      </div>
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-2">
-          {cart.length === 0 && (
-            <div className="text-center py-16 text-muted-foreground text-sm">
-              <ShoppingCart className="h-10 w-10 mx-auto mb-2 opacity-30" />
-              Tap food items to start a bill
-            </div>
-          )}
-          {cart.map((l) => (
-            <div key={l.item_id} className="bg-background rounded-xl p-3 border">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold truncate">{l.item_name}</div>
-                  <div className="text-xs text-muted-foreground">{formatINR(l.price)} × {l.quantity}</div>
-                </div>
-                <button onClick={() => removeLine(l.item_id)} className="text-muted-foreground hover:text-destructive p-1">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <button onClick={() => changeQty(l.item_id, -1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
-                    <Minus className="h-3.5 w-3.5" />
-                  </button>
-                  <input
-                    type="number"
-                    value={l.quantity || ""}
-                    onChange={(e) => {
-                      const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-                      if (!isNaN(val)) {
-                        updateQty(l.item_id, val);
-                      }
-                    }}
-                    onBlur={() => cleanupCart()}
-                    className="w-12 h-8 text-center border rounded-md bg-background [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none font-medium"
-                    min="0"
-                  />
-                  <button onClick={() => changeQty(l.item_id, 1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-                <div className="font-bold">{formatINR(l.price * l.quantity)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
-      <div className="p-4 border-t space-y-3 bg-card mt-auto">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Items</span>
-          <span>{cart.reduce((s, l) => s + l.quantity, 0)}</span>
-        </div>
-        <div className="flex items-center justify-between text-2xl font-bold">
-          <span>Total</span>
-          <span className="text-primary">{formatINR(total)}</span>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <Button variant="outline" onClick={() => setCart([])} disabled={!cart.length}>
-            <Eraser className="h-4 w-4 mr-1" /> Clear
-          </Button>
-          <Button variant="secondary" onClick={handleSave} disabled={!cart.length || saveMut.isPending}>
-            <Save className="h-4 w-4 mr-1" /> Save
-          </Button>
-          <Button onClick={handlePrint} disabled={!cart.length && !lastBill}>
-            <Printer className="h-4 w-4 mr-1" /> Print
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-3.5rem)] lg:h-screen relative">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-3.5rem)] lg:h-screen">
       {/* Left: Menu grid */}
       <section className="flex-1 min-w-0 flex flex-col p-4 lg:p-6 gap-4 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
@@ -225,7 +118,7 @@ function POSPage() {
           ))}
         </div>
         <ScrollArea className="flex-1 -mx-1">
-          <div className="px-1 pb-28 lg:pb-0 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4">
+          <div className="px-1 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4">
             {isLoading && (
               <div className="col-span-full text-center text-muted-foreground py-12">Loading menu…</div>
             )}
@@ -258,54 +151,70 @@ function POSPage() {
         </ScrollArea>
       </section>
 
-      {/* Right: Cart (Desktop only) */}
-      <aside className="hidden lg:flex lg:w-[400px] xl:w-[440px] border-t lg:border-t-0 lg:border-l bg-card flex flex-col">
-        {renderCartContent()}
-      </aside>
-
-      {/* Mobile Cart Floating Action Bar */}
-      {(cart.length > 0 || lastBill) && (
-        <div className="lg:hidden fixed bottom-4 inset-x-4 z-40 bg-sidebar text-sidebar-foreground p-3 rounded-2xl flex items-center justify-between shadow-lg border border-sidebar-border animate-in slide-in-from-bottom duration-300">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center">
-              <ShoppingCart className="h-5 w-5" />
-            </div>
-            <div className="text-left">
-              <div className="text-xs opacity-75">
-                {cart.length > 0
-                  ? `${cart.reduce((s, l) => s + l.quantity, 0)} items`
-                  : "Last bill saved"}
-              </div>
-              <div className="font-bold text-sm">
-                {cart.length > 0 ? formatINR(total) : lastBill?.bill_number}
-              </div>
-            </div>
-          </div>
-          {cart.length > 0 ? (
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-              <DrawerTrigger asChild>
-                <Button size="sm" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/95">
-                  View Bill
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent className="max-h-[85vh] h-[85vh] flex flex-col bg-card border-none">
-                <div className="flex-1 overflow-hidden flex flex-col">
-                  {renderCartContent(true)}
-                </div>
-              </DrawerContent>
-            </Drawer>
-          ) : (
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-sidebar-primary text-sidebar-primary hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
-              onClick={handlePrint}
-            >
-              <Printer className="h-4 w-4 mr-1" /> Reprint
-            </Button>
-          )}
+      {/* Right: Cart */}
+      <aside className="lg:w-[400px] xl:w-[440px] border-t lg:border-t-0 lg:border-l bg-card flex flex-col">
+        <div className="px-5 py-4 border-b flex items-center gap-2">
+          <ShoppingCart className="h-5 w-5 text-primary" />
+          <div className="font-bold text-lg">Current Bill</div>
+          <Badge variant="secondary" className="ml-auto">{cart.length} items</Badge>
         </div>
-      )}
+        <ScrollArea className="flex-1">
+          <div className="p-4 space-y-2">
+            {cart.length === 0 && (
+              <div className="text-center py-16 text-muted-foreground text-sm">
+                <ShoppingCart className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                Tap food items to start a bill
+              </div>
+            )}
+            {cart.map((l) => (
+              <div key={l.item_id} className="bg-background rounded-xl p-3 border">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold truncate">{l.item_name}</div>
+                    <div className="text-xs text-muted-foreground">{formatINR(l.price)} × {l.quantity}</div>
+                  </div>
+                  <button onClick={() => removeLine(l.item_id)} className="text-muted-foreground hover:text-destructive p-1">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => changeQty(l.item_id, -1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <div className="w-8 text-center font-medium">{l.quantity}</div>
+                    <button onClick={() => changeQty(l.item_id, 1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="font-bold">{formatINR(l.price * l.quantity)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+        <div className="p-4 border-t space-y-3 bg-card">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Items</span>
+            <span>{cart.reduce((s, l) => s + l.quantity, 0)}</span>
+          </div>
+          <div className="flex items-center justify-between text-2xl font-bold">
+            <span>Total</span>
+            <span className="text-primary">{formatINR(total)}</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <Button variant="outline" onClick={() => setCart([])} disabled={!cart.length}>
+              <Eraser className="h-4 w-4 mr-1" /> Clear
+            </Button>
+            <Button variant="secondary" onClick={handleSave} disabled={!cart.length || saveMut.isPending}>
+              <Save className="h-4 w-4 mr-1" /> Save
+            </Button>
+            <Button onClick={handlePrint} disabled={!cart.length && !lastBill}>
+              <Printer className="h-4 w-4 mr-1" /> Print
+            </Button>
+          </div>
+        </div>
+      </aside>
 
       {lastBill && (
         <PrintBill
