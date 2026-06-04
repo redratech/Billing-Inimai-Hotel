@@ -133,7 +133,7 @@ function MenuPage() {
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{draft.id ? "Edit Item" : "Add Item"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div>
@@ -146,7 +146,7 @@ function MenuPage() {
               <Label>Image URL</Label>
               <Input value={draft.image_url} onChange={(e) => setDraft({ ...draft, image_url: e.target.value })} placeholder="https://images.unsplash.com/..." />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label>Name</Label>
                 <Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
@@ -156,7 +156,7 @@ function MenuPage() {
                 <Input type="number" value={draft.price} onChange={(e) => setDraft({ ...draft, price: e.target.value })} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label>Category</Label>
                 <Select value={draft.category} onValueChange={(v) => setDraft({ ...draft, category: v })}>
