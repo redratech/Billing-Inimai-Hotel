@@ -5,7 +5,7 @@ import { IndianRupee, Receipt, Utensils, TrendingUp, Crown } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Smart Hotel" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Hotel Inimai" }] }),
   component: Dashboard,
 });
 

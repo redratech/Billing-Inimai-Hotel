@@ -20,7 +20,7 @@ import {
 import { PrintBill, printBill } from "@/components/PrintBill";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "POS — Smart Hotel Billing" }] }),
+  head: () => ({ meta: [{ title: "POS — Hotel Inimai Billing" }] }),
   component: POSPage,
 });
 
