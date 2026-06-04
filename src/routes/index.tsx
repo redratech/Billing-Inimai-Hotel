@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
   CATEGORIES,
@@ -35,6 +36,10 @@ function POSPage() {
   const [lastBill, setLastBill] = useState<{ bill_number: string; created_at: string; lines: CartLine[]; total: number } | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
 
+  // Modal dialog states for specifying item quantity
+  const [selectedItemForQty, setSelectedItemForQty] = useState<MenuItem | null>(null);
+  const [typedQty, setTypedQty] = useState<number>(1);
+
   const filtered = useMemo(() => {
     return items
       .filter((i) => i.status === "active")
@@ -44,19 +49,42 @@ function POSPage() {
 
   const total = cart.reduce((s, l) => s + l.price * l.quantity, 0);
 
-  function addToCart(it: MenuItem) {
-    setCart((c) => {
-      const found = c.find((l) => l.item_id === it.id);
-      if (found) return c.map((l) => (l.item_id === it.id ? { ...l, quantity: l.quantity + 1 } : l));
-      return [...c, { item_id: it.id, item_name: it.name, price: Number(it.price), quantity: 1 }];
-    });
+  function handleItemClick(it: MenuItem) {
+    setSelectedItemForQty(it);
+    setTypedQty(1);
   }
+
+  function confirmAddToCart() {
+    if (!selectedItemForQty) return;
+    if (typedQty <= 0) {
+      toast.error("Please enter a valid quantity of 1 or more");
+      return;
+    }
+    setCart((c) => {
+      const found = c.find((l) => l.item_id === selectedItemForQty.id);
+      if (found) return c.map((l) => (l.item_id === selectedItemForQty.id ? { ...l, quantity: l.quantity + typedQty } : l));
+      return [...c, { item_id: selectedItemForQty.id, item_name: selectedItemForQty.name, price: Number(selectedItemForQty.price), quantity: typedQty }];
+    });
+    setSelectedItemForQty(null);
+    toast.success(`${selectedItemForQty.name} x ${typedQty} added to bill`);
+  }
+
   function changeQty(id: string, d: number) {
     setCart((c) =>
       c
         .map((l) => (l.item_id === id ? { ...l, quantity: l.quantity + d } : l))
         .filter((l) => l.quantity > 0)
     );
+  }
+  function setQty(id: string, qty: number) {
+    setCart((c) =>
+      c.map((l) => (l.item_id === id ? { ...l, quantity: qty } : l))
+    );
+  }
+  function handleCartQtyBlur(id: string, qty: number) {
+    if (qty <= 0) {
+      removeLine(id);
+    }
   }
   function removeLine(id: string) {
     setCart((c) => c.filter((l) => l.item_id !== id));
@@ -123,7 +151,17 @@ function POSPage() {
                   <button onClick={() => changeQty(l.item_id, -1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
                     <Minus className="h-3.5 w-3.5" />
                   </button>
-                  <div className="w-8 text-center font-medium">{l.quantity}</div>
+                  <input
+                    type="number"
+                    min="0"
+                    value={l.quantity === 0 ? "" : l.quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setQty(l.item_id, isNaN(val) ? 0 : val);
+                    }}
+                    onBlur={() => handleCartQtyBlur(l.item_id, l.quantity)}
+                    className="w-12 h-8 text-center font-medium border rounded-md bg-card focus:outline-none focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
                   <button onClick={() => changeQty(l.item_id, 1)} className="h-8 w-8 rounded-md border bg-card hover:bg-muted flex items-center justify-center">
                     <Plus className="h-3.5 w-3.5" />
                   </button>
@@ -200,7 +238,7 @@ function POSPage() {
             {filtered.map((it) => (
               <button
                 key={it.id}
-                onClick={() => addToCart(it)}
+                onClick={() => handleItemClick(it)}
                 className="group bg-card rounded-2xl overflow-hidden text-left border hover:shadow-[var(--shadow-card)] transition-all hover:-translate-y-0.5 active:scale-[0.98]"
               >
                 <div className="aspect-square bg-muted overflow-hidden">
@@ -263,6 +301,89 @@ function POSPage() {
           total={lastBill.total}
         />
       )}
+
+      {/* Choose Quantity Dialog */}
+      <Dialog open={!!selectedItemForQty} onOpenChange={(open) => !open && setSelectedItemForQty(null)}>
+        <DialogContent className="max-w-md w-[calc(100%-2rem)]">
+          <DialogHeader>
+            <DialogTitle>Enter Quantity</DialogTitle>
+          </DialogHeader>
+          {selectedItemForQty && (
+            <div className="space-y-4 py-2">
+              <div className="flex gap-4 items-center">
+                <div className="h-16 w-16 bg-muted rounded-xl overflow-hidden border flex-shrink-0">
+                  <img
+                    src={thumbUrl(selectedItemForQty.image_url, 120)}
+                    alt={selectedItemForQty.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => ((e.currentTarget as HTMLImageElement).src = DEFAULT_FOOD_IMAGE)}
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm text-muted-foreground">{selectedItemForQty.category}</div>
+                  <div className="font-bold text-lg truncate">{selectedItemForQty.name}</div>
+                  <div className="font-semibold text-primary">{formatINR(Number(selectedItemForQty.price))} each</div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-muted-foreground">Quantity</label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 w-12 text-lg font-bold select-none cursor-pointer"
+                    onClick={() => setTypedQty(q => Math.max(1, q - 1))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Input
+                    type="number"
+                    min="1"
+                    className="h-12 text-center text-xl font-bold flex-1"
+                    value={typedQty === 0 ? "" : typedQty}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setTypedQty(isNaN(val) ? 0 : val);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        confirmAddToCart();
+                      }
+                    }}
+                    autoFocus
+                    onFocus={(e) => e.target.select()}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 w-12 text-lg font-bold select-none cursor-pointer"
+                    onClick={() => setTypedQty(q => q + 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center bg-muted/40 p-3.5 rounded-xl border border-dashed font-semibold">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-xl font-bold text-primary">
+                  {formatINR(Number(selectedItemForQty.price) * (typedQty || 0))}
+                </span>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setSelectedItemForQty(null)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmAddToCart} disabled={!typedQty || typedQty <= 0}>
+              Add to Bill
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
