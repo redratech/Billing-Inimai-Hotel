@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { queryOptions } from "@tanstack/react-query";
 
 export type ItemCategory = "Breakfast" | "Lunch" | "Dinner" | "Beverages" | "Snacks";
 export const CATEGORIES: ItemCategory[] = ["Breakfast", "Lunch", "Dinner", "Beverages", "Snacks"];
@@ -41,6 +42,29 @@ export async function fetchItems(): Promise<MenuItem[]> {
     .order("created_at", { ascending: true });
   if (error) throw error;
   return (data ?? []) as MenuItem[];
+}
+
+export const itemsQuery = queryOptions({
+  queryKey: ["items"],
+  queryFn: fetchItems,
+  staleTime: 5 * 60 * 1000,
+  gcTime: 30 * 60 * 1000,
+});
+
+export const billsQuery = queryOptions({
+  queryKey: ["bills"],
+  queryFn: fetchBills,
+  staleTime: 60 * 1000,
+});
+
+// Append Unsplash sizing params for smaller, faster thumbnails.
+export function thumbUrl(url: string | null | undefined, w = 320): string {
+  const src = url || DEFAULT_FOOD_IMAGE;
+  if (!/images\.unsplash\.com/.test(src)) return src;
+  const sep = src.includes("?") ? "&" : "?";
+  // Strip any existing w= to avoid duplicates
+  const cleaned = src.replace(/([?&])w=\d+/g, "$1").replace(/&&+/g, "&").replace(/\?&/, "?");
+  return `${cleaned}${cleaned.includes("?") ? "&" : "?"}w=${w}&q=70&auto=format&fit=crop`;
 }
 
 export async function fetchBills(): Promise<Bill[]> {
