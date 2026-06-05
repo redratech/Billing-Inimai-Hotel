@@ -1,6 +1,9 @@
 {
   "name": "tanstack_start_ts",
   "private": true,
+  "overrides": {
+    "tslib": "^2.8.1"
+  },
   "sideEffects": false,
   "type": "module",
   "scripts": {
