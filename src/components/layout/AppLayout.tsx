@@ -1,10 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, UtensilsCrossed, ShoppingBag, Receipt, BarChart3, Menu as MenuIcon, X } from "lucide-react";
+import { LayoutDashboard, UtensilsCrossed, ShoppingBag, Receipt, BarChart3, Menu as MenuIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "POS / Billing", icon: ShoppingBag },
+  { to: "/", label: "Billing", icon: ShoppingBag },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/menu", label: "Menu", icon: UtensilsCrossed },
   { to: "/bills", label: "Bill History", icon: Receipt },
@@ -14,6 +14,7 @@ const NAV = [
 export function AppLayout({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -29,24 +30,34 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-sidebar text-sidebar-foreground transition-transform duration-300 no-print",
+          "fixed lg:sticky top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 no-print",
+          collapsed ? "w-20" : "w-64",
           "lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className="h-16 flex items-center justify-between px-5 border-b border-sidebar-border">
-          <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
+        <div className="h-16 flex items-center justify-between px-4 lg:px-5 border-b border-sidebar-border">
+          <Link to="/" className={cn("flex items-center gap-2", collapsed && "justify-center")} onClick={() => setOpen(false)}>
             <div className="h-9 w-9 rounded-xl flex items-center justify-center text-lg font-bold" style={{ background: "var(--gradient-warm)", color: "oklch(0.2 0.05 35)" }}>
               IH
             </div>
-            <div className="leading-tight">
+            <div className={cn("leading-tight transition-opacity duration-200", collapsed ? "opacity-0 pointer-events-none" : "opacity-100")}>
               <div className="font-bold">Inimai Hotel</div>
               <div className="text-xs opacity-70">Billing System</div>
             </div>
           </Link>
-          <button onClick={() => setOpen(false)} className="lg:hidden p-1" aria-label="Close menu">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCollapsed((prev) => !prev)}
+              className="hidden lg:inline-flex p-2 rounded-full bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-primary/80"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </button>
+            <button onClick={() => setOpen(false)} className="lg:hidden p-1" aria-label="Close menu">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
         <nav className="p-3 space-y-1">
           {NAV.map((n) => {
@@ -59,18 +70,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 onClick={() => setOpen(false)}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  collapsed ? "justify-center px-0" : "justify-start",
                   active
                     ? "bg-sidebar-primary text-sidebar-primary-foreground shadow"
                     : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
               >
                 <Icon className="h-4 w-4" />
-                {n.label}
+                <span className={cn("transition-all duration-200", collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100")}>{n.label}</span>
               </Link>
             );
           })}
         </nav>
-        <div className="absolute bottom-0 inset-x-0 p-4 text-xs text-sidebar-foreground/60 border-t border-sidebar-border">
+        <div className={cn("absolute bottom-0 inset-x-0 p-4 text-xs text-sidebar-foreground/60 border-t border-sidebar-border transition-opacity duration-200", collapsed ? "opacity-0 pointer-events-none" : "opacity-100")}> 
           v1.0 · Powered By Redra Tech
         </div>
       </aside>

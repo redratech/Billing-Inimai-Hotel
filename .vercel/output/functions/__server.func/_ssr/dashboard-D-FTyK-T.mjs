@@ -2,7 +2,7 @@ import { j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
 import { u as useQuery } from "../_libs/tanstack__react-query.mjs";
 import { f as formatINR, c as formatDateTime, a as fetchBills, d as fetchItems, b as fetchAllBillItems } from "./db-Dcxwj5Ft.mjs";
-import { I as IndianRupee, R as Receipt, f as TrendingUp, g as Utensils, h as Crown } from "../_libs/lucide-react.mjs";
+import { I as IndianRupee, R as Receipt, h as TrendingUp, i as Utensils, j as Crown } from "../_libs/lucide-react.mjs";
 import { R as ResponsiveContainer, B as BarChart, C as CartesianGrid, X as XAxis, Y as YAxis, T as Tooltip, b as Bar } from "../_libs/recharts.mjs";
 import "../_libs/tanstack__router-core.mjs";
 import "../_libs/tanstack__history.mjs";

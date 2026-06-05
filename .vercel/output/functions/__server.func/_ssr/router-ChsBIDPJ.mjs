@@ -5,7 +5,7 @@ import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { c as clsx } from "../_libs/clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { T as Toaster$1 } from "../_libs/sonner.mjs";
-import { M as Menu, X, S as ShoppingBag, L as LayoutDashboard, U as UtensilsCrossed, R as Receipt, C as ChartColumn } from "../_libs/lucide-react.mjs";
+import { M as Menu, C as ChevronRight, a as ChevronLeft, X, S as ShoppingBag, L as LayoutDashboard, U as UtensilsCrossed, R as Receipt, b as ChartColumn } from "../_libs/lucide-react.mjs";
 import "../_libs/tanstack__router-core.mjs";
 import "../_libs/tanstack__history.mjs";
 import "../_libs/cookie-es.mjs";
@@ -19,7 +19,7 @@ import "crypto";
 import "async_hooks";
 import "stream";
 import "../_libs/isbot.mjs";
-const appCss = "/assets/styles-Cz_vWcdf.css";
+const appCss = "/assets/styles-BwuB23kh.css";
 function reportLovableError(error, context = {}) {
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(
@@ -40,7 +40,7 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 const NAV = [
-  { to: "/", label: "POS / Billing", icon: ShoppingBag },
+  { to: "/", label: "Billing", icon: ShoppingBag },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/menu", label: "Menu", icon: UtensilsCrossed },
   { to: "/bills", label: "Bill History", icon: Receipt },
@@ -49,6 +49,7 @@ const NAV = [
 function AppLayout({ children }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = reactExports.useState(false);
+  const [collapsed, setCollapsed] = reactExports.useState(false);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen flex bg-background", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "lg:hidden fixed top-0 inset-x-0 z-30 h-14 bg-sidebar text-sidebar-foreground flex items-center justify-between px-4 no-print", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setOpen(true), "aria-label": "Open menu", className: "p-2 -ml-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Menu, { className: "h-6 w-6" }) }),
@@ -59,20 +60,32 @@ function AppLayout({ children }) {
       "aside",
       {
         className: cn(
-          "fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-sidebar text-sidebar-foreground transition-transform duration-300 no-print",
+          "fixed lg:sticky top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 no-print",
+          collapsed ? "w-20" : "w-64",
           "lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         ),
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "h-16 flex items-center justify-between px-5 border-b border-sidebar-border", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", className: "flex items-center gap-2", onClick: () => setOpen(false), children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "h-16 flex items-center justify-between px-4 lg:px-5 border-b border-sidebar-border", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", className: cn("flex items-center gap-2", collapsed && "justify-center"), onClick: () => setOpen(false), children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-9 w-9 rounded-xl flex items-center justify-center text-lg font-bold", style: { background: "var(--gradient-warm)", color: "oklch(0.2 0.05 35)" }, children: "IH" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "leading-tight", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cn("leading-tight transition-opacity duration-200", collapsed ? "opacity-0 pointer-events-none" : "opacity-100"), children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold", children: "Inimai Hotel" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs opacity-70", children: "Billing System" })
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setOpen(false), className: "lg:hidden p-1", "aria-label": "Close menu", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-5 w-5" }) })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: () => setCollapsed((prev) => !prev),
+                  className: "hidden lg:inline-flex p-2 rounded-full bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-primary/80",
+                  "aria-label": collapsed ? "Expand sidebar" : "Collapse sidebar",
+                  children: collapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "h-4 w-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "h-4 w-4" })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setOpen(false), className: "lg:hidden p-1", "aria-label": "Close menu", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-5 w-5" }) })
+            ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "p-3 space-y-1", children: NAV.map((n) => {
             const active = n.to === "/" ? path === "/" : path.startsWith(n.to);
@@ -84,17 +97,18 @@ function AppLayout({ children }) {
                 onClick: () => setOpen(false),
                 className: cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  collapsed ? "justify-center px-0" : "justify-start",
                   active ? "bg-sidebar-primary text-sidebar-primary-foreground shadow" : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 ),
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "h-4 w-4" }),
-                  n.label
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: cn("transition-all duration-200", collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"), children: n.label })
                 ]
               },
               n.to
             );
           }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-0 inset-x-0 p-4 text-xs text-sidebar-foreground/60 border-t border-sidebar-border", children: "v1.0 · Single Admin Mode" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("absolute bottom-0 inset-x-0 p-4 text-xs text-sidebar-foreground/60 border-t border-sidebar-border transition-opacity duration-200", collapsed ? "opacity-0 pointer-events-none" : "opacity-100"), children: "v1.0 · Powered By Redra Tech" })
         ]
       }
     ),
@@ -221,7 +235,7 @@ const Route$4 = createFileRoute("/reports")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-const $$splitComponentImporter$3 = () => import("./menu-CM8LuFcC.mjs");
+const $$splitComponentImporter$3 = () => import("./menu-ByecelDr.mjs");
 const Route$3 = createFileRoute("/menu")({
   head: () => ({
     meta: [{
@@ -239,7 +253,7 @@ const Route$2 = createFileRoute("/dashboard")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-const $$splitComponentImporter$1 = () => import("./bills-BnIQ9htj.mjs");
+const $$splitComponentImporter$1 = () => import("./bills-BVxxLBO7.mjs");
 const Route$1 = createFileRoute("/bills")({
   head: () => ({
     meta: [{
@@ -248,7 +262,7 @@ const Route$1 = createFileRoute("/bills")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./index-B1pioFfk.mjs");
+const $$splitComponentImporter = () => import("./index-KKQH-RLj.mjs");
 const Route = createFileRoute("/")({
   head: () => ({
     meta: [{

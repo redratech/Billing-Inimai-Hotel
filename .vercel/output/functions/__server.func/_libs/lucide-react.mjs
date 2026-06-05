@@ -75,17 +75,21 @@ const createLucideIcon = (iconName, iconNode) => {
   Component.displayName = toPascalCase(iconName);
   return Component;
 };
-const __iconNode$o = [
+const __iconNode$q = [
   ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
   ["path", { d: "M18 17V9", key: "2bz60n" }],
   ["path", { d: "M13 17V5", key: "1frdt8" }],
   ["path", { d: "M8 17v-3", key: "17ska0" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$o);
-const __iconNode$n = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$n);
-const __iconNode$m = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$m);
+const ChartColumn = createLucideIcon("chart-column", __iconNode$q);
+const __iconNode$p = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$p);
+const __iconNode$o = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$o);
+const __iconNode$n = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$n);
+const __iconNode$m = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$m);
 const __iconNode$l = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
 const ChevronUp = createLucideIcon("chevron-up", __iconNode$l);
 const __iconNode$k = [
@@ -262,7 +266,7 @@ const __iconNode = [
 ];
 const X = createLucideIcon("x", __iconNode);
 export {
-  ChartColumn as C,
+  ChevronRight as C,
   Eye as E,
   IndianRupee as I,
   LayoutDashboard as L,
@@ -273,18 +277,20 @@ export {
   Trash2 as T,
   UtensilsCrossed as U,
   X,
-  Pencil as a,
-  Power as b,
-  ChevronDown as c,
-  Check as d,
-  ChevronUp as e,
-  TrendingUp as f,
-  Utensils as g,
-  Crown as h,
-  Search as i,
-  Printer as j,
-  ShoppingCart as k,
-  Minus as l,
-  Eraser as m,
-  Save as n
+  ChevronLeft as a,
+  ChartColumn as b,
+  Pencil as c,
+  Power as d,
+  ChevronDown as e,
+  Check as f,
+  ChevronUp as g,
+  TrendingUp as h,
+  Utensils as i,
+  Crown as j,
+  Search as k,
+  Printer as l,
+  ShoppingCart as m,
+  Minus as n,
+  Eraser as o,
+  Save as p
 };
