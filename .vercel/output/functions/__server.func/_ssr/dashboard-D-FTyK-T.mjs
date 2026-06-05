@@ -1,7 +1,7 @@
 import { j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
 import { u as useQuery } from "../_libs/tanstack__react-query.mjs";
-import { f as formatINR, c as formatDateTime, a as fetchBills, d as fetchItems, b as fetchAllBillItems } from "./db-qnB_sV2M.mjs";
+import { f as formatINR, c as formatDateTime, a as fetchBills, d as fetchItems, b as fetchAllBillItems } from "./db-Dcxwj5Ft.mjs";
 import { I as IndianRupee, R as Receipt, f as TrendingUp, g as Utensils, h as Crown } from "../_libs/lucide-react.mjs";
 import { R as ResponsiveContainer, B as BarChart, C as CartesianGrid, X as XAxis, Y as YAxis, T as Tooltip, b as Bar } from "../_libs/recharts.mjs";
 import "../_libs/tanstack__router-core.mjs";
@@ -68,11 +68,31 @@ function Dashboard() {
     queryKey: ["bill_items"],
     queryFn: fetchAllBillItems
   });
-  const todayStr = (/* @__PURE__ */ new Date()).toDateString();
-  const monthKey = (/* @__PURE__ */ new Date()).toISOString().slice(0, 7);
-  const todayBills = bills.filter((b) => new Date(b.created_at).toDateString() === todayStr);
+  const todayKey = (/* @__PURE__ */ new Date()).toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+  const monthKey = (/* @__PURE__ */ new Date()).toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    month: "2-digit",
+    year: "numeric"
+  });
+  const billDateKey = (createdAt) => new Date(createdAt).toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+  const billMonthKey = (createdAt) => new Date(createdAt).toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    month: "2-digit",
+    year: "numeric"
+  });
+  const todayBills = bills.filter((b) => billDateKey(b.created_at) === todayKey);
   const todaySales = todayBills.reduce((s, b) => s + Number(b.total_amount), 0);
-  const monthlyRevenue = bills.filter((b) => b.created_at.startsWith(monthKey)).reduce((s, b) => s + Number(b.total_amount), 0);
+  const monthlyRevenue = bills.filter((b) => billMonthKey(b.created_at) === monthKey).reduce((s, b) => s + Number(b.total_amount), 0);
   const itemTotals = /* @__PURE__ */ new Map();
   for (const bi of billItems) {
     const cur = itemTotals.get(bi.item_name) ?? {
@@ -90,11 +110,17 @@ function Dashboard() {
   for (let i = 6; i >= 0; i--) {
     const d = /* @__PURE__ */ new Date();
     d.setDate(d.getDate() - i);
-    const key = d.toDateString();
-    const rev = bills.filter((b) => new Date(b.created_at).toDateString() === key).reduce((s, b) => s + Number(b.total_amount), 0);
+    const key = d.toLocaleDateString("en-GB", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    const rev = bills.filter((b) => billDateKey(b.created_at) === key).reduce((s, b) => s + Number(b.total_amount), 0);
     days.push({
       day: d.toLocaleDateString("en-IN", {
-        weekday: "short"
+        weekday: "short",
+        timeZone: "Asia/Kolkata"
       }),
       revenue: rev
     });

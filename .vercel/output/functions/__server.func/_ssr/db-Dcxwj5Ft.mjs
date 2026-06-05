@@ -52,9 +52,9 @@ async function createBill(lines) {
   return bill;
 }
 const HOTEL_INFO = {
-  name: "Smart Hotel",
-  address: "123 Main Street, Chennai",
-  phone: "+91 98765 43210"
+  name: "Inimai Hotel",
+  address: "Main Road, M.Reddiapatti",
+  phone: "+91 9626868774"
 };
 function formatINR(n) {
   return "₹" + Number(n).toFixed(2);

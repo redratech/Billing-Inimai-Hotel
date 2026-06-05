@@ -5,7 +5,7 @@ import { fetchAllBillItems, fetchBills, formatINR } from "@/lib/db";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LineChart, Line } from "recharts";
 
 export const Route = createFileRoute("/reports")({
-  head: () => ({ meta: [{ title: "Reports — Smart Hotel" }] }),
+  head: () => ({ meta: [{ title: "Reports - Inimai Hotel" }] }),
   component: Reports,
 });
 

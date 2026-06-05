@@ -120,9 +120,9 @@ export async function createBill(lines: CartLine[]): Promise<Bill> {
 }
 
 export const HOTEL_INFO = {
-  name: "Smart Hotel",
-  address: "123 Main Street, Chennai",
-  phone: "+91 98765 43210",
+  name: "Inimai Hotel",
+  address: "Main Road, M.Reddiapatti",
+  phone: "+91 9626868774",
 };
 
 export function formatINR(n: number) {

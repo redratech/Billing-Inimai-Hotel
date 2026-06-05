@@ -5,7 +5,7 @@ import { IndianRupee, Receipt, Utensils, TrendingUp, Crown } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Smart Hotel" }] }),
+  head: () => ({ meta: [{ title: "Dashboard - Inimai Hotel" }] }),
   component: Dashboard,
 });
 
@@ -14,13 +14,37 @@ function Dashboard() {
   const { data: items = [] } = useQuery({ queryKey: ["items"], queryFn: fetchItems });
   const { data: billItems = [] } = useQuery({ queryKey: ["bill_items"], queryFn: fetchAllBillItems });
 
-  const todayStr = new Date().toDateString();
-  const monthKey = new Date().toISOString().slice(0, 7);
+  const todayKey = new Date().toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const monthKey = new Date().toLocaleDateString("en-GB", {
+    timeZone: "Asia/Kolkata",
+    month: "2-digit",
+    year: "numeric",
+  });
 
-  const todayBills = bills.filter((b) => new Date(b.created_at).toDateString() === todayStr);
+  const billDateKey = (createdAt: string) =>
+    new Date(createdAt).toLocaleDateString("en-GB", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+  const billMonthKey = (createdAt: string) =>
+    new Date(createdAt).toLocaleDateString("en-GB", {
+      timeZone: "Asia/Kolkata",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+  const todayBills = bills.filter((b) => billDateKey(b.created_at) === todayKey);
   const todaySales = todayBills.reduce((s, b) => s + Number(b.total_amount), 0);
   const monthlyRevenue = bills
-    .filter((b) => b.created_at.startsWith(monthKey))
+    .filter((b) => billMonthKey(b.created_at) === monthKey)
     .reduce((s, b) => s + Number(b.total_amount), 0);
 
   const itemTotals = new Map<string, { name: string; qty: number; revenue: number }>();
@@ -36,10 +60,16 @@ function Dashboard() {
   // last 7 days
   const days: { day: string; revenue: number }[] = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const key = d.toDateString();
-    const rev = bills.filter((b) => new Date(b.created_at).toDateString() === key).reduce((s, b) => s + Number(b.total_amount), 0);
-    days.push({ day: d.toLocaleDateString("en-IN", { weekday: "short" }), revenue: rev });
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toLocaleDateString("en-GB", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    const rev = bills.filter((b) => billDateKey(b.created_at) === key).reduce((s, b) => s + Number(b.total_amount), 0);
+    days.push({ day: d.toLocaleDateString("en-IN", { weekday: "short", timeZone: "Asia/Kolkata" }), revenue: rev });
   }
 
   const recent = bills.slice(0, 6);

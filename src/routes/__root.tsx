@@ -79,9 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Smart Hotel Billing System" },
+      { title: "Inimai Hotel Billing System" },
       { name: "description", content: "Modern POS and billing for small hotels and restaurants." },
-      { property: "og:title", content: "Smart Hotel Billing System" },
+      { property: "og:title", content: "Inimai Hotel Billing System" },
       { property: "og:description", content: "Modern POS and billing for small hotels and restaurants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

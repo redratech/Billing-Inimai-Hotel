@@ -1,5 +1,5 @@
 import { j as jsxRuntimeExports } from "../_libs/react.mjs";
-import { H as HOTEL_INFO, c as formatDateTime, f as formatINR } from "./db-qnB_sV2M.mjs";
+import { H as HOTEL_INFO, c as formatDateTime, f as formatINR } from "./db-Dcxwj5Ft.mjs";
 function printBill() {
   window.print();
 }

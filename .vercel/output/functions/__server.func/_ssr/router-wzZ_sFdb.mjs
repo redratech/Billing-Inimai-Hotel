@@ -52,7 +52,7 @@ function AppLayout({ children }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen flex bg-background", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "lg:hidden fixed top-0 inset-x-0 z-30 h-14 bg-sidebar text-sidebar-foreground flex items-center justify-between px-4 no-print", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setOpen(true), "aria-label": "Open menu", className: "p-2 -ml-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Menu, { className: "h-6 w-6" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold tracking-tight", children: "Smart Hotel" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold tracking-tight", children: "Inimai Hotel" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -66,9 +66,9 @@ function AppLayout({ children }) {
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "h-16 flex items-center justify-between px-5 border-b border-sidebar-border", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", className: "flex items-center gap-2", onClick: () => setOpen(false), children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-9 w-9 rounded-xl flex items-center justify-center text-lg font-bold", style: { background: "var(--gradient-warm)", color: "oklch(0.2 0.05 35)" }, children: "SH" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-9 w-9 rounded-xl flex items-center justify-center text-lg font-bold", style: { background: "var(--gradient-warm)", color: "oklch(0.2 0.05 35)" }, children: "IH" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "leading-tight", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold", children: "Smart Hotel" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold", children: "Inimai Hotel" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs opacity-70", children: "Billing System" })
               ] })
             ] }),
@@ -177,9 +177,9 @@ const Route$5 = createRootRouteWithContext()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Smart Hotel Billing System" },
+      { title: "Inimai Hotel Billing System" },
       { name: "description", content: "Modern POS and billing for small hotels and restaurants." },
-      { property: "og:title", content: "Smart Hotel Billing System" },
+      { property: "og:title", content: "Inimai Hotel Billing System" },
       { property: "og:description", content: "Modern POS and billing for small hotels and restaurants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" }
@@ -212,47 +212,47 @@ function RootComponent() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { richColors: true, position: "top-right" })
   ] });
 }
-const $$splitComponentImporter$4 = () => import("./reports-D53yIm_f.mjs");
+const $$splitComponentImporter$4 = () => import("./reports-B447cbHX.mjs");
 const Route$4 = createFileRoute("/reports")({
   head: () => ({
     meta: [{
-      title: "Reports — Smart Hotel"
+      title: "Reports - Inimai Hotel"
     }]
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-const $$splitComponentImporter$3 = () => import("./menu-Bmzg0rJ5.mjs");
+const $$splitComponentImporter$3 = () => import("./menu-CM8LuFcC.mjs");
 const Route$3 = createFileRoute("/menu")({
   head: () => ({
     meta: [{
-      title: "Menu — Smart Hotel"
+      title: "Menu - Inimai Hotel"
     }]
   }),
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-const $$splitComponentImporter$2 = () => import("./dashboard-DsK6DnMZ.mjs");
+const $$splitComponentImporter$2 = () => import("./dashboard-D-FTyK-T.mjs");
 const Route$2 = createFileRoute("/dashboard")({
   head: () => ({
     meta: [{
-      title: "Dashboard — Smart Hotel"
+      title: "Dashboard - Inimai Hotel"
     }]
   }),
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-const $$splitComponentImporter$1 = () => import("./bills-DrtMiyaE.mjs");
+const $$splitComponentImporter$1 = () => import("./bills-BnIQ9htj.mjs");
 const Route$1 = createFileRoute("/bills")({
   head: () => ({
     meta: [{
-      title: "Bill History — Smart Hotel"
+      title: "Bill History - Inimai Hotel"
     }]
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./index-nwoU3J0X.mjs");
+const $$splitComponentImporter = () => import("./index-B1pioFfk.mjs");
 const Route = createFileRoute("/")({
   head: () => ({
     meta: [{
-      title: "POS — Smart Hotel Billing"
+      title: "Inimai Hotel Billing"
     }]
   }),
   component: lazyRouteComponent($$splitComponentImporter, "component")

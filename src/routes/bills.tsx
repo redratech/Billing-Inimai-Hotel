@@ -9,7 +9,7 @@ import { fetchBillItems, fetchBills, formatDateTime, formatINR, type Bill } from
 import { PrintBill, printBill } from "@/components/PrintBill";
 
 export const Route = createFileRoute("/bills")({
-  head: () => ({ meta: [{ title: "Bill History — Smart Hotel" }] }),
+  head: () => ({ meta: [{ title: "Bill History - Inimai Hotel" }] }),
   component: BillsPage,
 });
 
