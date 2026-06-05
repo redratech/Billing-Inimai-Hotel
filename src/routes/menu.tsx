@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { CATEGORIES, DEFAULT_FOOD_IMAGE, fetchItems, formatINR, type MenuItem } from "@/lib/db";
+import { CATEGORIES, DEFAULT_FOOD_IMAGE, itemsQuery, formatINR, thumbUrl, type MenuItem } from "@/lib/db";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({ meta: [{ title: "Menu — Smart Hotel" }] }),
@@ -32,7 +32,7 @@ const empty: Draft = { name: "", category: "Breakfast", price: "", image_url: ""
 
 function MenuPage() {
   const qc = useQueryClient();
-  const { data: items = [], isLoading } = useQuery({ queryKey: ["items"], queryFn: fetchItems });
+  const { data: items = [], isLoading } = useQuery(itemsQuery);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<Draft>(empty);
   const [filter, setFilter] = useState("All");
@@ -108,7 +108,7 @@ function MenuPage() {
           {filtered.map((it) => (
             <div key={it.id} className="bg-card rounded-2xl border overflow-hidden shadow-[var(--shadow-soft)]">
               <div className="aspect-video bg-muted">
-                <img src={it.image_url || DEFAULT_FOOD_IMAGE} alt={it.name} className="w-full h-full object-cover" onError={(e) => ((e.currentTarget as HTMLImageElement).src = DEFAULT_FOOD_IMAGE)} />
+                <img src={thumbUrl(it.image_url, 480)} alt={it.name} loading="lazy" decoding="async" className="w-full h-full object-cover" onError={(e) => ((e.currentTarget as HTMLImageElement).src = DEFAULT_FOOD_IMAGE)} />
               </div>
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
