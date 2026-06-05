@@ -12,9 +12,10 @@ import { cn } from "@/lib/utils";
 import {
   CATEGORIES,
   DEFAULT_FOOD_IMAGE,
-  fetchItems,
+  itemsQuery,
   formatINR,
   createBill,
+  thumbUrl,
   type CartLine,
   type MenuItem,
 } from "@/lib/db";
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/")({
 
 function POSPage() {
   const qc = useQueryClient();
-  const { data: items = [], isLoading } = useQuery({ queryKey: ["items"], queryFn: fetchItems });
+  const { data: items = [], isLoading } = useQuery(itemsQuery);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [cart, setCart] = useState<CartLine[]>([]);
@@ -204,9 +205,10 @@ function POSPage() {
               >
                 <div className="aspect-square bg-muted overflow-hidden">
                   <img
-                    src={it.image_url || DEFAULT_FOOD_IMAGE}
+                    src={thumbUrl(it.image_url, 320)}
                     alt={it.name}
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => ((e.currentTarget as HTMLImageElement).src = DEFAULT_FOOD_IMAGE)}
                   />
